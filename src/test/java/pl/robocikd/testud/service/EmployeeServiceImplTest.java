@@ -6,13 +6,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pl.robocikd.testud.exception.ResourceNotFoundException;
 import pl.robocikd.testud.model.Employee;
 import pl.robocikd.testud.repository.EmployeeRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
@@ -44,6 +51,22 @@ class EmployeeServiceImplTest {
         Employee savedEmployee = employeeService.saveEmployee(employee);
         // then
         assertThat(savedEmployee).isNotNull();
+    }
+
+    @Test
+    void givenExistingEmail_whenSaveEmployee_thenThrowException() {
+        // given
+        given(employeeRepository.findByEmail(employee.getEmail())).willReturn(Optional.of(employee));
+        // when
+        assertThrows(ResourceNotFoundException.class, () -> employeeService.saveEmployee(employee));
+        assertThatThrownBy(() -> {
+            employeeService.saveEmployee(employee);
+        }).isInstanceOf(ResourceNotFoundException.class);
+
+        Throwable thrown = catchThrowable(() -> employeeService.saveEmployee(employee));
+        // then
+        assertThat(thrown).isInstanceOf(ResourceNotFoundException.class);
+        verify(employeeRepository, never()).save(any(Employee.class));
     }
 
 }
