@@ -7,6 +7,7 @@ import pl.robocikd.testud.model.Employee;
 import pl.robocikd.testud.repository.EmployeeRepository;
 import pl.robocikd.testud.service.impl.EmployeeService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -22,5 +23,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new ResourceNotFoundException("Employee already exist with given email: " + employee.getEmail());
         }
         return employeeRepository.save(employee);
+    }
+
+    @Override
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
     }
 }

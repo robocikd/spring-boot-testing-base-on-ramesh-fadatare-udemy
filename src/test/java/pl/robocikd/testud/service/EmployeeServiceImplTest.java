@@ -10,6 +10,8 @@ import pl.robocikd.testud.exception.ResourceNotFoundException;
 import pl.robocikd.testud.model.Employee;
 import pl.robocikd.testud.repository.EmployeeRepository;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,4 +71,29 @@ class EmployeeServiceImplTest {
         verify(employeeRepository, never()).save(any(Employee.class));
     }
 
+    @Test
+    void givenEmployeesList_whenGetAllEmployees_thenReturnEmployees() {
+        // given
+        Employee employee2 = Employee.builder()
+                .id(2L)
+                .firstName("Damian")
+                .lastName("Robot")
+                .email("daro@gmail.com")
+                .build();
+        given(employeeRepository.findAll()).willReturn(List.of(employee, employee2));
+        // when
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        // then
+        assertThat(employeeList).hasSize(2);
+    }
+
+    @Test
+    void givenEmployeesList_whenGetAllEmployees_thenReturnEmptyList() {
+        // given
+        given(employeeRepository.findAll()).willReturn(Collections.emptyList());
+        // when
+        List<Employee> employeeList = employeeService.getAllEmployees();
+        // then
+        assertThat(employeeList).isEmpty();
+    }
 }
