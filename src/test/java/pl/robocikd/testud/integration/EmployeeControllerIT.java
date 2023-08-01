@@ -9,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import pl.robocikd.testud.model.Employee;
 import pl.robocikd.testud.repository.EmployeeRepository;
 
@@ -27,11 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
-public class EmployeeControllerIT {
-
-    @Container
-    private static final MySQLContainer MY_SQL_CONTAINER = new MySQLContainer<>("mysql:latest");
+public class EmployeeControllerIT extends AbstractContainerBaseTest {
 
     @Autowired
     private MockMvc mockMvc;
